@@ -381,7 +381,7 @@ func (db *DB) CreateJob(job *Job) (*Job, error) {
 
 		/* validate the target */
 		if err := db.targetShouldExist(job.TargetUUID); err != nil {
-			return fmt.Errorf("unable to create job: %s", err)
+			return fmt.Errorf("unable to create job target: %s", err)
 		}
 
 		return db.exec(`

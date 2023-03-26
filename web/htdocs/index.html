@@ -243,7 +243,7 @@
         they are styled as buttons)
       ]]
           <div id="login" class="frontdoor">
-            <div [[ if (_.providers.length = 0) { ]] class="local-only"[[ } ]]>
+            <div [[ if (_.providers.length == 0) { ]] class="local-only"[[ } ]]>
               <h1>SHIELD<span style="color: [[= h(_.info.color || 'green') ]]">[[= h(_.info.env) ]]<span></h1>
               <div class="dialog">
                 [[ if (_.info.motd) { ]]<div class="motd">[[= md(_.info.motd) ]]</div>[[ } ]]
@@ -732,32 +732,32 @@ src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKEAAAChCAYAAACvUd+2AAAACXBIW
       ]]
       <div class="roles-menu ephemeral">
         [[ if (_.type == 'tenant') { ]]
-        <div [[ if (_.current = "admin") { ]] class="current"[[ } ]] data-role="admin">
+        <div [[ if (_.current == "admin") { ]] class="current"[[ } ]] data-role="admin">
           <strong>Administrator</strong>
           <p>Full control over this tenant.</p>
         </div>
-        <div [[ if (_.current = "engineer") { ]] class="current"[[ } ]] data-role="engineer">
+        <div [[ if (_.current == "engineer") { ]] class="current"[[ } ]] data-role="engineer">
           <strong>Engineer</strong>
           <p>Can do everything except manage other peoples
              access to this tenant.</p>
         </div>
-        <div [[ if (_.current = "operator") { ]] class="current"[[ } ]] data-role="operator">
+        <div [[ if (_.current == "operator") { ]] class="current"[[ } ]] data-role="operator">
           <strong>Operator</strong>
           <p>View access to most things, with the ability to
              pause and unpause jobs, run ad hoc backups, and
              perform restore operations.</p>
         </div>
         [[ } else { ]]
-        <div [[ if (_.current = "admin") { ]] class="current"[[ } ]] data-role="admin">
+        <div [[ if (_.current == "admin") { ]] class="current"[[ } ]] data-role="admin">
           <strong>Administrator</strong>
           <p>Full control over SHIELD.</p>
         </div>
-        <div [[ if (_.current = "manager") { ]] class="current"[[ } ]] data-role="manager">
+        <div [[ if (_.current == "manager") { ]] class="current"[[ } ]] data-role="manager">
           <strong>Manager</strong>
           <p>Can create and edit tenants, manage tenant/user
              memberships, and manage user accounts and access rights.</p>
         </div>
-        <div [[ if (_.current = "engineer") { ]] class="current"[[ } ]] data-role="engineer">
+        <div [[ if (_.current == "engineer") { ]] class="current"[[ } ]] data-role="engineer">
           <strong>Engineer</strong>
           <p>Manages global configuration, namely shared cloud
              storage configurations.</p>
@@ -2965,7 +2965,7 @@ for job <em>[[= _.task.job_uuid ]]</em>
               </li>
               <li><a href="#!/admin/auth">Authentication Providers</a>
                 <p>SHIELD can authenticate (and authorize) users against 3rd party OAuth2
-                implementations like Github and UAA.  These authentication <em>providers</em>
+                implementations like Github, Okta and UAA.  These authentication <em>providers</em>
                 are configured in the SHIELD Core configuration file, but you can review their
                 configuration here.</p>
               </li>
@@ -3184,6 +3184,24 @@ for job <em>[[= _.task.job_uuid ]]</em>
 
             <p>These <strong>must</strong> match the values you configure
             in the SHIELD Core configuration YAML file.</p>
+            
+            [[ } else if (_.provider.type == 'okta') { ]]
+              <p>This is an <strong>Okta</strong>-backed authentication provider, targeting
+                [[ if (!p.OktaIssuer || p.OktaIssuer == "" || p.OktaIssuer.match(/okta\.com/)) { ]]
+                public Okta.
+                [[ } else { ]]
+                a private, on-premise Okta Enterprise (<a href="[[= p.OktaIssuer ]]">[[= p.OktaIssuer ]]</a>).
+                [[ } ]]</p>
+                <h3>Configuring Okta</h3>
+                <p>First, you will need
+                to <a href="https://help.okta.com/en-us/Content/Topics/Apps/Apps_App_Integration_Wizard_OIDC.htm">register a new
+                OAuth2 application</a> for this SHIELD:</p>
+    
+                <p>Once your application is registered, Okta will provide you
+                with a new Client ID and Client Secret. You will also need the SHIELD deployment address, Okta Domain and the Authorization Server with a groups claim.</p>
+    
+                <p>These <strong>must</strong> match the values you configure
+                in the SHIELD Core configuration YAML file.</p>
 
             [[ } else { ]]
             <p>This is a <strong>UAA</strong>-backed authentication provider.</p>
